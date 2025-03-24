@@ -2,47 +2,45 @@ package main
 
 var tmpl = `package {{ .Package }}
 import (
-	"sync/atomic"
+	"go.opentelemetry.io/otel/trace"
 	{{- range .Imports }}
 	{{ . }}
 	{{- end }}
 )
 
-// {{ .Name }}Mock is a mock implementation of the {{ .Name }}
-// interface.
-type {{ .Name }}Mock{{ .TypeParams }} struct {
-	T *testing.T
-	{{- range .Methods }}
-	{{ .Name }}Stub func({{ .Params }}) {{ .Results }}
-	{{ .Name }}Called int32
-	{{- end }}
+// {{ .Name }}WithTracer is an implementation of the {{ .Name }}
+// interface with all methods traced.
+type {{ .Name }}WithTracer{{ .TypeParams }} struct {
+	Base {{ .Name }}
+	Tracer trace.Tracer
 }
 
-// Verify that *{{ .Name }}Mock implements {{ .Name }}.
+// Verify that *{{ .Name }}WithTracer implements {{ .Name }}.
 {{- if .TypeParams }}
 func _{{ .TypeParams }}() {
-    var _ {{ .Name }}{{ .TypeParams.Names }} = &{{ .Name }}Mock{{ .TypeParams.Names }}{}
+    var _ {{ .Name }}{{ .TypeParams.Names }} = &{{ .Name }}WithTracer{{ .TypeParams.Names }}{}
 }
 {{ else }}
-var _ {{ .Name }} = &{{ .Name }}Mock{}
+var _ {{ .Name }} = &{{ .Name }}WithTracer{}
 {{ end }}
 
-{{- range .Methods }}
+{{- range $method := .Methods }}
 
-// {{ .Name}} is a stub for the {{ $.Name }}.{{ .Name }}
-// method that records the number of times it has been called.
-func (m *{{ $.Name }}Mock{{ $.TypeParams.Names }}) {{ .Name }}({{ .Params.NamedString }}) {{ .Results }}{
-	atomic.AddInt32(&m.{{ .Name }}Called, 1) 
-	if m.{{ .Name }}Stub == nil {
-		if m.T != nil {
-			m.T.Error("{{ .Name }}Stub is nil")
-		}
-		panic("{{ .Name }} unimplemented")
-	}
+// {{ $method.Name}} wraps the original {{ $.Name }}.{{ $method.Name }}
+// method and also conditionally starts a new tracing span.
+func (t *{{ $.Name }}WithTracer{{ $.TypeParams.Names }}) {{ $method.Name }}({{ $method.Params.NamedString }}) {{ $method.Results }}{
+	{{- range $param := .Params }}
+    {{- if eq $param.Type "context.Context" }}
+    {{ $param.Name }}, span := t.Tracer.Start({{ $param.Name }}, "{{ $.Name }}.{{ $method.Name }}")
+	defer func() {
+		span.End()
+	}()
+    {{ end }}
+	{{ end }}
 	{{- if gt (len .Results) 0 }}
-	return m.{{ .Name }}Stub({{ .Params.ArgsString }})
+	return t.Base.{{ .Name }}({{ .Params.ArgsString }})
 	{{- else }}
-	m.{{ .Name }}Stub({{ .Params.ArgsString }})
+	t.Base.{{ .Name }}({{ .Params.ArgsString }})
 	{{- end }}
 }
 {{- end -}}
