@@ -2,7 +2,7 @@ package main
 
 var tmpl = `package {{ .Package }}
 import (
-	"go.opentelemetry.io/otel/trace"
+	"github.com/nicheinc/account/v6/internal/metrics"
 	{{- range .Imports }}
 	{{ . }}
 	{{- end }}
@@ -12,7 +12,6 @@ import (
 // interface with all methods traced.
 type {{ .Name }}WithTracer{{ .TypeParams }} struct {
 	Base {{ .Name }}
-	Tracer trace.Tracer
 }
 
 // Verify that *{{ .Name }}WithTracer implements {{ .Name }}.
@@ -31,7 +30,8 @@ var _ {{ .Name }} = &{{ .Name }}WithTracer{}
 func (t *{{ $.Name }}WithTracer{{ $.TypeParams.Names }}) {{ $method.Name }}({{ $method.Params.NamedString }}) {{ $method.Results }}{
 	{{- range $param := .Params }}
     {{- if eq $param.Type "context.Context" }}
-    {{ $param.Name }}, span := t.Tracer.Start({{ $param.Name }}, "{{ $.Name }}.{{ $method.Name }}")
+	tracer := metrics.TracerOrNoopFromCtx({{ $param.Name }})
+    {{ $param.Name }}, span := tracer.Start({{ $param.Name }}, "{{ $.Name }}.{{ $method.Name }}")
 	defer func() {
 		span.End()
 	}()
