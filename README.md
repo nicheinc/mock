@@ -128,7 +128,7 @@ overwrite the file, so be careful not to edit it!
 > `go generate` has to run `mock` once per `go:generate` directive, which
 > requires parsing the package's AST and computing type information each time.
 > For modules with many mocked interfaces, that extra work adds up. However,
-> `mock` continues to support this approach for backward-compatibility.
+> `mock` continues to support this approach for backward compatibility.
 
 To use with `go generate`, simply place a `go:generate` comment somewhere in
 your package (e.g. above the interface definition), like so:
