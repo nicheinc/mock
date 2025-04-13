@@ -86,7 +86,7 @@ func main() {
 			if len(pkgs) > 1 {
 				log.Fatalf(`Found more than one package in %s`, config.dir)
 			}
-			// Parse the package and get info about the interface.
+			// Search the package for info about the interface.
 			i, getErr := iface.GetInterface(pkgs[0], flag.Args()[0], config.outputFile)
 			if getErr != nil {
 				log.Fatalf("Error getting interface information: %s", getErr)
