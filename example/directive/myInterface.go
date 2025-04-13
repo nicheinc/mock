@@ -1,12 +1,14 @@
-package example
+package directive
 
 import (
 	"fmt"
 	"html/template"
+
+	//lint:ignore ST1001 This tests dot import support.
 	. "os"
 	renamed "text/template"
 
-	"github.com/nicheinc/mock/example/internal"
+	"github.com/nicheinc/mock/example/directive/internal"
 )
 
 // TODO: chan types
@@ -15,7 +17,7 @@ import (
 // MyInterface is a sample interface with a large number of
 // methods of different signatures.
 //
-//go:generate mock -o myInterface_mock.go MyInterface
+//go:mock
 type MyInterface interface {
 	NoParamsOrReturn()
 	UnnamedParam(string)

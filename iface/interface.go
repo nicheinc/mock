@@ -13,6 +13,7 @@ type Interface struct {
 	Package    string
 	Imports    []Import
 	Methods    Methods
+	OutputPath string
 }
 
 type TypeParam struct {

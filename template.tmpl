@@ -1,6 +1,5 @@
-package main
+package {{ .Package }}
 
-var tmpl = `package {{ .Package }}
 import (
 	"sync/atomic"
 	{{- range .Imports }}
@@ -46,4 +45,3 @@ func (m *{{ $.Name }}Mock{{ $.TypeParams.Names }}) {{ .Name }}({{ .Params.NamedS
 	{{- end }}
 }
 {{- end -}}
-`

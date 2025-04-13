@@ -1,10 +1,10 @@
-package example
+package directive
 
 import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/nicheinc/mock/example/internal"
+	"github.com/nicheinc/mock/example/directive/internal"
 )
 
 // MyGenericInterfaceMock is a mock implementation of the MyGenericInterface
