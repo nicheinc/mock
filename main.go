@@ -34,14 +34,14 @@ Options:
 
 type config struct {
 	dir        string
-	outputPath string
+	outputFile string
 	write      bool
 }
 
 func main() {
 	var config config
 	flag.StringVar(&config.dir, "d", ".", "Directory to search for interfaces in")
-	flag.StringVar(&config.outputPath, "o", "", "Output file (default stdout)")
+	flag.StringVar(&config.outputFile, "o", "", "Output file (default stdout)")
 	flag.BoolVar(&config.write, "w", false, "Write mocks to files rather than stdout")
 
 	flag.Usage = func() {
@@ -64,7 +64,7 @@ func main() {
 		// we're generating mocks for all interfaces annotated with "go:mock" or
 		// for a single interface.
 		if len(flag.Args()) < 1 {
-			if config.outputPath != "" {
+			if config.outputFile != "" {
 				log.Fatalf("The -o option is only permitted when generating a single mock")
 			}
 
@@ -79,7 +79,7 @@ func main() {
 			if config.write {
 				log.Fatalf("The -w option is only permitted when generating all mocks")
 			}
-			config.write = config.outputPath != ""
+			config.write = config.outputFile != ""
 
 			// The first positional argument is the interface name. In this
 			// case, the target directory must contain a single package.
@@ -87,7 +87,7 @@ func main() {
 				log.Fatalf(`Found more than one package in %s`, config.dir)
 			}
 			// Parse the package and get info about the interface.
-			i, getErr := iface.GetInterface(pkgs[0], flag.Args()[0], config.outputPath)
+			i, getErr := iface.GetInterface(pkgs[0], flag.Args()[0], config.outputFile)
 			if getErr != nil {
 				log.Fatalf("Error getting interface information: %s", getErr)
 			}

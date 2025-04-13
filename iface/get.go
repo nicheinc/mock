@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go/ast"
 	"go/types"
+	"path/filepath"
 	"sort"
 	"strings"
 
@@ -37,11 +38,20 @@ func GetAllInterfaces(pkgs []*packages.Package) ([]Interface, error) {
 					if args == comment.Text {
 						continue
 					}
-					outputPath := strings.TrimSpace(args)
-					if outputPath == "" {
-						inputPath := pkg.Fset.File(fileNode.Pos()).Name()
+
+					// Build a qualified output pathname based on the output
+					// filename (or a default) and the input filepath.
+					var (
+						inputPath  = pkg.Fset.File(fileNode.Pos()).Name()
+						outputFile = strings.TrimSpace(args)
+						outputPath string
+					)
+					if outputFile == "" {
 						outputPath = strings.TrimSuffix(inputPath, ".go") + "_mock.go"
+					} else {
+						outputPath = filepath.Join(filepath.Dir(inputPath), outputFile)
 					}
+
 					for _, spec := range decl.Specs {
 						// Only consider type declarations.
 						spec, isType := spec.(*ast.TypeSpec)
@@ -77,9 +87,8 @@ func GetAllInterfaces(pkgs []*packages.Package) ([]Interface, error) {
 }
 
 // GetInterface searches the given package for the given interface and returns
-// its text-template-friendly representation. The provided outputPath, if
-// nonempty, overrides the default output path.
-func GetInterface(pkg *packages.Package, ifaceName string, outputPath string) (Interface, error) {
+// its text-template-friendly representation.
+func GetInterface(pkg *packages.Package, ifaceName string, outputFile string) (Interface, error) {
 	// Find the interface by name
 	ifaceObj := pkg.Types.Scope().Lookup(ifaceName)
 	if ifaceObj == nil {
@@ -102,7 +111,7 @@ func GetInterface(pkg *packages.Package, ifaceName string, outputPath string) (I
 		pkg:        pkg,
 		fileNode:   ifaceFileNode,
 		object:     ifaceObj,
-		outputPath: outputPath,
+		outputPath: outputFile,
 	})
 }
 

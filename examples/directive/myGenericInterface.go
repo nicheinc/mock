@@ -1,6 +1,6 @@
 package directive
 
-import "github.com/nicheinc/mock/example/directive/internal"
+import "github.com/nicheinc/mock/examples/directive/internal"
 
 // MyGenericInterface is a sample generic interface with a complex type
 // parameter list.

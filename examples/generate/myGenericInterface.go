@@ -1,6 +1,6 @@
 package generate
 
-import "github.com/nicheinc/mock/example/generate/internal"
+import "github.com/nicheinc/mock/examples/generate/internal"
 
 // MyGenericInterface is a sample generic interface with a complex type
 // parameter list.

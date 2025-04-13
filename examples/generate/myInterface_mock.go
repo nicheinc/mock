@@ -1,4 +1,4 @@
-package directive
+package generate
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"testing"
 	renamed "text/template"
 
-	"github.com/nicheinc/mock/example/directive/internal"
+	"github.com/nicheinc/mock/examples/generate/internal"
 )
 
 // MyInterfaceMock is a mock implementation of the MyInterface

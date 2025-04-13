@@ -1,4 +1,4 @@
-package generate
+package directive
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	. "os"
 	renamed "text/template"
 
-	"github.com/nicheinc/mock/example/generate/internal"
+	"github.com/nicheinc/mock/examples/directive/internal"
 )
 
 // TODO: chan types
@@ -17,7 +17,7 @@ import (
 // MyInterface is a sample interface with a large number of
 // methods of different signatures.
 //
-//go:generate mock -o myInterface_mock.go MyInterface
+//go:mock
 type MyInterface interface {
 	NoParamsOrReturn()
 	UnnamedParam(string)
