@@ -8,6 +8,9 @@ import (
 	. "os"
 	renamed "text/template"
 
+	// Blank imports should not be included in mock files.
+	_ "embed"
+
 	"github.com/nicheinc/mock/examples/directive/internal"
 )
 

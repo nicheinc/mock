@@ -136,11 +136,8 @@ func getFile(fileInfo fileInfo) (File, error) {
 	}
 
 	var (
-		file = File{
-			Package: fileInfo.pkg.Name,
-			Imports: imports,
-		}
-		qualifier = qualify(fileInfo.pkg.Types, imports, new([]Import))
+		file      = File{Package: fileInfo.pkg.Name}
+		qualifier = qualify(fileInfo.pkg.Types, imports, &file.Imports)
 	)
 	for _, object := range fileInfo.objects {
 		iface, ifaceErr := getInterface(fileInfo, qualifier, object)
