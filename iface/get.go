@@ -11,19 +11,19 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-// ifaceInfo represents syntactic and type information associated with an
-// interface definition.
-type ifaceInfo struct {
-	pkg        *packages.Package
-	fileNode   *ast.File
-	object     types.Object
-	outputPath string
+// fileInfo represents syntactic and type information for a file containing
+// interfaces to be mocked.
+type fileInfo struct {
+	pkg      *packages.Package
+	fileNode *ast.File
+	objects  []types.Object
 }
 
 // GetAllInterfaces searches the given packages for interfaces annotated with a
-// "go:mock" directive, returning text-template-friendly representations.
-func GetAllInterfaces(pkgs []*packages.Package) ([]Interface, error) {
-	var allInfo []ifaceInfo
+// "go:mock" directive, returning text-template-friendly representations grouped
+// by output file.
+func GetAllInterfaces(pkgs []*packages.Package) (map[string]File, error) {
+	fileInfoByPath := map[string]*fileInfo{}
 	for _, pkg := range pkgs {
 		for _, fileNode := range pkg.Syntax {
 			ast.Inspect(fileNode, func(node ast.Node) bool {
@@ -59,15 +59,21 @@ func GetAllInterfaces(pkgs []*packages.Package) ([]Interface, error) {
 							continue
 						}
 						// Get the type info for this declaration.
-						if object := pkg.TypesInfo.Defs[spec.Name]; object != nil {
-							allInfo = append(allInfo, ifaceInfo{
-								pkg:        pkg,
-								fileNode:   fileNode,
-								object:     object,
-								outputPath: outputPath,
-							})
-							return true
+						object := pkg.TypesInfo.Defs[spec.Name]
+						if object == nil {
+							continue
 						}
+						// Create the file info if it doesn't already exist, and
+						// add the newly discovered interface.
+						if _, fileInfoExists := fileInfoByPath[outputPath]; !fileInfoExists {
+							fileInfoByPath[outputPath] = &fileInfo{
+								pkg:      pkg,
+								fileNode: fileNode,
+							}
+						}
+						fileInfo := fileInfoByPath[outputPath]
+						fileInfo.objects = append(fileInfo.objects, object)
+						return true
 					}
 				}
 				return true
@@ -75,86 +81,100 @@ func GetAllInterfaces(pkgs []*packages.Package) ([]Interface, error) {
 		}
 	}
 
-	var ifaces []Interface
-	for _, info := range allInfo {
-		iface, ifaceErr := newInterface(info)
-		if ifaceErr != nil {
-			return nil, ifaceErr
+	filesByPath := map[string]File{}
+	for outputPath, fileInfo := range fileInfoByPath {
+		file, fileErr := getFile(*fileInfo)
+		if fileErr != nil {
+			return nil, fileErr
 		}
-		ifaces = append(ifaces, iface)
+		filesByPath[outputPath] = file
 	}
-	return ifaces, nil
+	return filesByPath, nil
 }
 
 // GetInterface searches the given package for the given interface and returns
 // its text-template-friendly representation.
-func GetInterface(pkg *packages.Package, ifaceName string, outputFile string) (Interface, error) {
+func GetInterface(pkg *packages.Package, ifaceName string) (File, error) {
 	// Find the interface by name
-	ifaceObj := pkg.Types.Scope().Lookup(ifaceName)
-	if ifaceObj == nil {
-		return Interface{}, fmt.Errorf("interface %s not found in package %s", ifaceName, pkg.Name)
+	object := pkg.Types.Scope().Lookup(ifaceName)
+	if object == nil {
+		return File{}, fmt.Errorf("interface %s not found in package %s", ifaceName, pkg.Name)
 	}
 
 	// Find the file node containing this interface's definition.
 	var ifaceFileNode *ast.File
 	for _, fileNode := range pkg.Syntax {
-		if pkg.Fset.File(fileNode.Pos()) == pkg.Fset.File(ifaceObj.Pos()) {
+		if pkg.Fset.File(fileNode.Pos()) == pkg.Fset.File(object.Pos()) {
 			ifaceFileNode = fileNode
 			break
 		}
 	}
 	if ifaceFileNode == nil {
-		return Interface{}, fmt.Errorf("declaration for interface %s not found in package %s's syntax trees", ifaceName, pkg.Name)
+		return File{}, fmt.Errorf("declaration for interface %s not found in package %s's syntax trees", ifaceName, pkg.Name)
 	}
 
-	return newInterface(ifaceInfo{
-		pkg:        pkg,
-		fileNode:   ifaceFileNode,
-		object:     ifaceObj,
-		outputPath: outputFile,
+	return getFile(fileInfo{
+		pkg:      pkg,
+		fileNode: ifaceFileNode,
+		objects:  []types.Object{object},
 	})
 }
 
-// newInterface uses syntactic and type information about an interface to
-// construct a text-template-friendly representation of that interface.
-func newInterface(info ifaceInfo) (Interface, error) {
-	// Validate that the object is indeed an interface declaration.
-	if _, isTypeName := info.object.(*types.TypeName); !isTypeName {
-		return Interface{}, fmt.Errorf("%s is not a named/defined type", info.object.Name())
-	}
-	ifaceType, isInterface := info.object.Type().Underlying().(*types.Interface)
-	if !isInterface {
-		return Interface{}, fmt.Errorf("%s is not an interface type", info.object.Name())
-	}
-
-	// Make sure that none of the types involved in the
-	// interface's definition were invalid/had errors
-	if !ValidateType(info.object.Type()) {
-		return Interface{}, &TypeErrors{Errs: info.pkg.Errors}
-	}
-
+// getFile uses syntactic and type information about a file of mockable
+// interfaces to construct a text-template-friendly representation of that file.
+func getFile(fileInfo fileInfo) (File, error) {
 	// Get the containing file's imports, along with their names (if renamed).
-	var imps []Import
-	for _, fileImp := range info.fileNode.Imports {
+	var imports []Import
+	for _, fileImport := range fileInfo.fileNode.Imports {
 		imp := Import{
-			Path: strings.Trim(fileImp.Path.Value, `"`),
+			Path: strings.Trim(fileImport.Path.Value, `"`),
 		}
-		if fileImp.Name != nil {
-			imp.Name = fileImp.Name.Name
+		if fileImport.Name != nil {
+			imp.Name = fileImport.Name.Name
 		}
-		imps = append(imps, imp)
+		imports = append(imports, imp)
+	}
+
+	var (
+		file = File{
+			Package: fileInfo.pkg.Name,
+			Imports: imports,
+		}
+		qualifier = qualify(fileInfo.pkg.Types, imports, new([]Import))
+	)
+	for _, object := range fileInfo.objects {
+		iface, ifaceErr := getInterface(fileInfo, qualifier, object)
+		if ifaceErr != nil {
+			return File{}, ifaceErr
+		}
+		file.Interfaces = append(file.Interfaces, iface)
+	}
+	return file, nil
+}
+
+// getInterface uses syntactic and type information about an interface to
+// construct a text-template-friendly representation of that interface.
+func getInterface(fileInfo fileInfo, qualifier types.Qualifier, object types.Object) (Interface, error) {
+	// Validate that the object is indeed an interface declaration.
+	if _, isTypeName := object.(*types.TypeName); !isTypeName {
+		return Interface{}, fmt.Errorf("%s is not a named/defined type", object.Name())
+	}
+	ifaceType, isInterface := object.Type().Underlying().(*types.Interface)
+	if !isInterface {
+		return Interface{}, fmt.Errorf("%s is not an interface type", object.Name())
+	}
+
+	// Make sure that none of the types involved in the interface's definition
+	// were invalid/had errors.
+	if !validateType(object.Type(), map[types.Type]bool{}) {
+		return Interface{}, &TypeErrors{Errs: fileInfo.pkg.Errors}
 	}
 
 	// Begin assembling information about the interface.
-	iface := Interface{
-		Package:    info.pkg.Name,
-		Name:       info.object.Name(),
-		OutputPath: info.outputPath,
-	}
-	qualifier := Qualify(info.pkg.Types, imps, &iface.Imports)
+	iface := Interface{Name: object.Name()}
 
 	// Record type parameter list info.
-	if ifaceNamed, ok := info.object.Type().(*types.Named); ok {
+	if ifaceNamed, ok := object.Type().(*types.Named); ok {
 		typeParams := ifaceNamed.TypeParams()
 		for i := range typeParams.Len() {
 			typeParam := typeParams.At(i)
@@ -165,7 +185,7 @@ func newInterface(info ifaceInfo) (Interface, error) {
 		}
 	}
 
-	// Iterate through each embedded interface's explicit methods
+	// Iterate through each embedded interface's explicit methods.
 	for _, ifaceType := range explodeInterface(ifaceType) {
 		for i := range ifaceType.NumExplicitMethods() {
 			methodObj := ifaceType.ExplicitMethod(i)
@@ -180,7 +200,7 @@ func newInterface(info ifaceInfo) (Interface, error) {
 				return Interface{}, fmt.Errorf("%s is not a method signature", methodObj.Name())
 			}
 
-			// Keep track of the names and types of the parameters
+			// Keep track of the names and types of the parameters.
 			paramsTuple := sig.Params()
 			for j := 0; j < paramsTuple.Len(); j++ {
 				paramObj := paramsTuple.At(j)
@@ -191,12 +211,12 @@ func newInterface(info ifaceInfo) (Interface, error) {
 				method.Params = append(method.Params, param)
 			}
 
-			// Mark whether the last parameter is variadic
+			// Mark whether the last parameter is variadic.
 			if len(method.Params) > 0 && sig.Variadic() {
 				method.Params[len(method.Params)-1].Variadic = true
 			}
 
-			// Keep track of the names and types of the results
+			// Keep track of the names and types of the results.
 			resultsTuple := sig.Results()
 			for j := 0; j < resultsTuple.Len(); j++ {
 				resultObj := resultsTuple.At(j)
@@ -211,7 +231,7 @@ func newInterface(info ifaceInfo) (Interface, error) {
 		}
 	}
 
-	// Preserve the original ordering of the methods
+	// Preserve the original ordering of the methods.
 	sort.Sort(iface.Methods)
 
 	return iface, nil
@@ -248,7 +268,7 @@ func explodeInterface(iface *types.Interface) []*types.Interface {
 	return result
 }
 
-func Qualify(pkg *types.Package, imps []Import, usedImps *[]Import) types.Qualifier {
+func qualify(pkg *types.Package, imps []Import, usedImps *[]Import) types.Qualifier {
 	return func(other *types.Package) string {
 		// If the type is from this package, don't qualify it
 		if pkg == other {
@@ -309,10 +329,6 @@ func Qualify(pkg *types.Package, imps []Import, usedImps *[]Import) types.Qualif
 		})
 		return other.Name()
 	}
-}
-
-func ValidateType(typ types.Type) bool {
-	return validateType(typ, map[types.Type]bool{})
 }
 
 func validateType(typ types.Type, visited map[types.Type]bool) bool {

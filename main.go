@@ -59,7 +59,7 @@ func main() {
 		log.Fatalf(`No packages found in %s`, config.dir)
 	}
 
-	ifaces := func() []iface.Interface {
+	filesByPath := func() map[string]iface.File {
 		// The presence/absence of a positional argument determines whether
 		// we're generating mocks for all interfaces annotated with "go:mock" or
 		// for a single interface.
@@ -70,11 +70,11 @@ func main() {
 
 			// Search all packages in the target directory for interfaces
 			// annotated with "go:mock".
-			ifaces, getErr := iface.GetAllInterfaces(pkgs)
+			filesByPath, getErr := iface.GetAllInterfaces(pkgs)
 			if getErr != nil {
 				log.Fatalf(`Error getting interface information: %s`, getErr)
 			}
-			return ifaces
+			return filesByPath
 		} else {
 			if config.write {
 				log.Fatalf("The -w option is only permitted when generating all mocks")
@@ -87,11 +87,11 @@ func main() {
 				log.Fatalf(`Found more than one package in %s`, config.dir)
 			}
 			// Search the package for info about the interface.
-			i, getErr := iface.GetInterface(pkgs[0], flag.Args()[0], config.outputFile)
+			file, getErr := iface.GetInterface(pkgs[0], flag.Args()[0])
 			if getErr != nil {
 				log.Fatalf("Error getting interface information: %s", getErr)
 			}
-			return []iface.Interface{i}
+			return map[string]iface.File{config.outputFile: file}
 		}
 	}()
 
@@ -101,15 +101,15 @@ func main() {
 		log.Fatalf("Error parsing template: %s", templateErr)
 	}
 
-	for _, iface := range ifaces {
+	for outputPath, file := range filesByPath {
 		// Execute/output the template for this interface.
 		buf := &bytes.Buffer{}
-		if executeErr := tmpl.Execute(buf, &iface); executeErr != nil {
+		if executeErr := tmpl.Execute(buf, file); executeErr != nil {
 			log.Fatalf("Error executing template: %s", executeErr)
 		}
 
 		// Format it with go imports.
-		formatted, importsErr := imports.Process(iface.OutputPath, buf.Bytes(), nil)
+		formatted, importsErr := imports.Process(outputPath, buf.Bytes(), nil)
 		if importsErr != nil {
 			log.Fatalf("Error formatting output: %s", importsErr)
 		}
@@ -118,7 +118,7 @@ func main() {
 		out := os.Stdout
 		if config.write {
 			var createErr error
-			out, createErr = os.Create(iface.OutputPath)
+			out, createErr = os.Create(outputPath)
 			if createErr != nil {
 				log.Fatalf("Error creating output file: %s", createErr)
 			}
