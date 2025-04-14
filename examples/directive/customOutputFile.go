@@ -1,7 +1,10 @@
 package directive
 
-// CustomOutputFile demonstrates the use of a go:mock directive that overrides
-// the default mock filename.
-//
+// These types demonstrate the use of go:mock directives overriding the default
+// mock filenames, as well as generation of two mocks into the same file.
+
 //go:mock custom_mock.go
-type CustomOutputFile any
+type CustomOutputFile1 any
+
+//go:mock custom_mock.go
+type CustomOutputFile2 any

@@ -2,11 +2,20 @@ package directive
 
 import "testing"
 
-// CustomOutputFileMock is a mock implementation of the CustomOutputFile
+// CustomOutputFile1Mock is a mock implementation of the CustomOutputFile1
 // interface.
-type CustomOutputFileMock struct {
+type CustomOutputFile1Mock struct {
 	T *testing.T
 }
 
-// Verify that *CustomOutputFileMock implements CustomOutputFile.
-var _ CustomOutputFile = &CustomOutputFileMock{}
+// Verify that *CustomOutputFile1Mock implements CustomOutputFile1.
+var _ CustomOutputFile1 = &CustomOutputFile1Mock{}
+
+// CustomOutputFile2Mock is a mock implementation of the CustomOutputFile2
+// interface.
+type CustomOutputFile2Mock struct {
+	T *testing.T
+}
+
+// Verify that *CustomOutputFile2Mock implements CustomOutputFile2.
+var _ CustomOutputFile2 = &CustomOutputFile2Mock{}
