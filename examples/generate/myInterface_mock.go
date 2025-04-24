@@ -71,6 +71,10 @@ type MyInterfaceMock struct {
 	InterfaceVariadicFuncVariadicParamCalled int32
 	EmbeddedInterfaceParamStub               func(intf interface{ fmt.Stringer })
 	EmbeddedInterfaceParamCalled             int32
+	ChannelParamStub                         func(chanParam chan int)
+	ChannelParamCalled                       int32
+	MapParamStub                             func(mapParam map[int]int)
+	MapParamCalled                           int32
 	UnnamedReturnStub                        func() error
 	UnnamedReturnCalled                      int32
 	MultipleUnnamedReturnStub                func() (int, error)
@@ -99,6 +103,10 @@ type MyInterfaceMock struct {
 	InterfaceVariadicFuncReturnCalled        int32
 	EmbeddedInterfaceReturnStub              func() (intf interface{ fmt.Stringer })
 	EmbeddedInterfaceReturnCalled            int32
+	ChannelReturnStub                        func() chan int
+	ChannelReturnCalled                      int32
+	MapReturnStub                            func() map[int]int
+	MapReturnCalled                          int32
 }
 
 // Verify that *MyInterfaceMock implements MyInterface.
@@ -468,6 +476,32 @@ func (m *MyInterfaceMock) EmbeddedInterfaceParam(intf interface{ fmt.Stringer })
 	m.EmbeddedInterfaceParamStub(intf)
 }
 
+// ChannelParam is a stub for the MyInterface.ChannelParam
+// method that records the number of times it has been called.
+func (m *MyInterfaceMock) ChannelParam(chanParam chan int) {
+	atomic.AddInt32(&m.ChannelParamCalled, 1)
+	if m.ChannelParamStub == nil {
+		if m.T != nil {
+			m.T.Error("ChannelParamStub is nil")
+		}
+		panic("ChannelParam unimplemented")
+	}
+	m.ChannelParamStub(chanParam)
+}
+
+// MapParam is a stub for the MyInterface.MapParam
+// method that records the number of times it has been called.
+func (m *MyInterfaceMock) MapParam(mapParam map[int]int) {
+	atomic.AddInt32(&m.MapParamCalled, 1)
+	if m.MapParamStub == nil {
+		if m.T != nil {
+			m.T.Error("MapParamStub is nil")
+		}
+		panic("MapParam unimplemented")
+	}
+	m.MapParamStub(mapParam)
+}
+
 // UnnamedReturn is a stub for the MyInterface.UnnamedReturn
 // method that records the number of times it has been called.
 func (m *MyInterfaceMock) UnnamedReturn() error {
@@ -648,4 +682,30 @@ func (m *MyInterfaceMock) EmbeddedInterfaceReturn() (intf interface{ fmt.Stringe
 		panic("EmbeddedInterfaceReturn unimplemented")
 	}
 	return m.EmbeddedInterfaceReturnStub()
+}
+
+// ChannelReturn is a stub for the MyInterface.ChannelReturn
+// method that records the number of times it has been called.
+func (m *MyInterfaceMock) ChannelReturn() chan int {
+	atomic.AddInt32(&m.ChannelReturnCalled, 1)
+	if m.ChannelReturnStub == nil {
+		if m.T != nil {
+			m.T.Error("ChannelReturnStub is nil")
+		}
+		panic("ChannelReturn unimplemented")
+	}
+	return m.ChannelReturnStub()
+}
+
+// MapReturn is a stub for the MyInterface.MapReturn
+// method that records the number of times it has been called.
+func (m *MyInterfaceMock) MapReturn() map[int]int {
+	atomic.AddInt32(&m.MapReturnCalled, 1)
+	if m.MapReturnStub == nil {
+		if m.T != nil {
+			m.T.Error("MapReturnStub is nil")
+		}
+		panic("MapReturn unimplemented")
+	}
+	return m.MapReturnStub()
 }

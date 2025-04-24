@@ -14,9 +14,6 @@ import (
 	"github.com/nicheinc/mock/examples/generate/internal"
 )
 
-// TODO: chan types
-// TODO: map types
-
 // MyInterface is a sample interface with a large number of
 // methods of different signatures.
 //
@@ -60,6 +57,8 @@ type MyInterface interface {
 	EmbeddedInterfaceParam(intf interface {
 		fmt.Stringer
 	})
+	ChannelParam(chanParam chan int)
+	MapParam(mapParam map[int]int)
 
 	UnnamedReturn() error
 	MultipleUnnamedReturn() (int, error)
@@ -81,4 +80,6 @@ type MyInterface interface {
 	EmbeddedInterfaceReturn() (intf interface {
 		fmt.Stringer
 	})
+	ChannelReturn() chan int
+	MapReturn() map[int]int
 }
