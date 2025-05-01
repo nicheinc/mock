@@ -4,7 +4,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/nicheinc/mock/examples/generate/internal"
+	"github.com/nathanjcochran/mock/examples/generate/internal"
 )
 
 // GenericMock is a mock implementation of the Generic

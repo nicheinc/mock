@@ -10,14 +10,14 @@ Mocks are thread-safe.
 You can install `mock` locally using the following command:
 
 ```
-go install github.com/nicheinc/mock
+go install github.com/nathanjcochran/mock
 ```
 
 However, if your Go module depends on `mock`, you may wish to add it to your
 `go.mod` as a tool dependency:
 
 ```
-go get -tool github.com/nicheinc/mock
+go get -tool github.com/nathanjcochran/mock
 ```
 
 If you also vendor your dependencies, this ensures that contributors to your

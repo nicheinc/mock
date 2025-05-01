@@ -9,7 +9,7 @@ import (
 	"os"
 	"text/template"
 
-	"github.com/nicheinc/mock/iface"
+	"github.com/nathanjcochran/mock/iface"
 	"golang.org/x/tools/go/packages"
 	"golang.org/x/tools/imports"
 )

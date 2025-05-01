@@ -11,7 +11,7 @@ import (
 	// Blank imports should not be included in mock files.
 	_ "embed"
 
-	"github.com/nicheinc/mock/examples/generate/internal"
+	"github.com/nathanjcochran/mock/examples/generate/internal"
 )
 
 // Example is a sample interface with a large number of

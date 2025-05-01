@@ -1,6 +1,6 @@
 package generate
 
-import "github.com/nicheinc/mock/examples/generate/internal"
+import "github.com/nathanjcochran/mock/examples/generate/internal"
 
 // Generic is a sample generic interface with a complex type parameter list.
 //

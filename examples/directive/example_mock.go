@@ -8,7 +8,7 @@ import (
 	"testing"
 	renamed "text/template"
 
-	"github.com/nicheinc/mock/examples/directive/internal"
+	"github.com/nathanjcochran/mock/examples/directive/internal"
 )
 
 // ExampleMock is a mock implementation of the Example

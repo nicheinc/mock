@@ -1,4 +1,4 @@
-module github.com/nicheinc/mock
+module github.com/nathanjcochran/mock
 
 go 1.24.0
 
