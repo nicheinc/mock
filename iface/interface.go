@@ -7,11 +7,15 @@ import (
 	"strings"
 )
 
+type File struct {
+	Package    string
+	Imports    []Import
+	Interfaces []Interface
+}
+
 type Interface struct {
 	Name       string
 	TypeParams TypeParams
-	Package    string
-	Imports    []Import
 	Methods    Methods
 }
 

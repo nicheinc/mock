@@ -1,16 +1,18 @@
-package example
+package generate
 
 import (
 	"fmt"
 	"html/template"
+
+	//lint:ignore ST1001 This tests dot import support.
 	. "os"
 	renamed "text/template"
 
-	"github.com/nicheinc/mock/example/internal"
-)
+	// Blank imports should not be included in mock files.
+	_ "embed"
 
-// TODO: chan types
-// TODO: map types
+	"github.com/nicheinc/mock/examples/generate/internal"
+)
 
 // MyInterface is a sample interface with a large number of
 // methods of different signatures.
@@ -55,6 +57,8 @@ type MyInterface interface {
 	EmbeddedInterfaceParam(intf interface {
 		fmt.Stringer
 	})
+	ChannelParam(chanParam chan int)
+	MapParam(mapParam map[int]int)
 
 	UnnamedReturn() error
 	MultipleUnnamedReturn() (int, error)
@@ -76,4 +80,6 @@ type MyInterface interface {
 	EmbeddedInterfaceReturn() (intf interface {
 		fmt.Stringer
 	})
+	ChannelReturn() chan int
+	MapReturn() map[int]int
 }

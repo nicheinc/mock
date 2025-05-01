@@ -1,10 +1,10 @@
-package example
+package generate
 
 import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/nicheinc/mock/example/internal"
+	"github.com/nicheinc/mock/examples/generate/internal"
 )
 
 // MyGenericInterfaceMock is a mock implementation of the MyGenericInterface
