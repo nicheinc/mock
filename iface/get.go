@@ -21,8 +21,9 @@ type fileInfo struct {
 
 // GetAllInterfaces searches the given packages for interfaces annotated with a
 // "go:mock" directive, returning text-template-friendly representations grouped
-// by output file.
-func GetAllInterfaces(pkgs []*packages.Package) (map[string]File, error) {
+// by output file. If nonempty, defaultOutputFile will be used as the output
+// file for interfaces without an explicit output file.
+func GetAllInterfaces(pkgs []*packages.Package, defaultOutputFile string) (map[string]File, error) {
 	fileInfoByPath := map[string]*fileInfo{}
 	for _, pkg := range pkgs {
 		for _, fileNode := range pkg.Syntax {
@@ -50,10 +51,13 @@ func GetAllInterfaces(pkgs []*packages.Package) (map[string]File, error) {
 						outputFile = strings.TrimSpace(args)
 						outputPath string
 					)
-					if outputFile == "" {
-						outputPath = strings.TrimSuffix(inputPath, ".go") + "_mock.go"
-					} else {
+					switch {
+					case outputFile != "":
 						outputPath = filepath.Join(filepath.Dir(inputPath), outputFile)
+					case defaultOutputFile != "":
+						outputPath = filepath.Join(filepath.Dir(inputPath), defaultOutputFile)
+					default:
+						outputPath = strings.TrimSuffix(inputPath, ".go") + "_mock.go"
 					}
 
 					for _, spec := range decl.Specs {

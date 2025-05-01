@@ -23,11 +23,11 @@ When the positional interface argument is omitted, all interfaces in the search
 directory annotated with a "go:mock [output file]" directive will be mocked and
 output to stdout or, with the -w option, written to files. If a go:mock
 directive in a file called example.go doesn't specify an output file, the
-default output file will be example_mock.go.
+default output file will be the -o flag (if provided) or else example_mock.go.
 
 When an interface name is provided as a positional argument after all other
-flags, only that interface will be mocked. The -o option requires an interface
-argument, and the -w option is incompatible with an interface argument.
+flags, only that interface will be mocked. The -w option is incompatible with an
+interface argument.
 
 Options:
 `
@@ -64,13 +64,9 @@ func main() {
 		// we're generating mocks for all interfaces annotated with "go:mock" or
 		// for a single interface.
 		if len(flag.Args()) < 1 {
-			if config.outputFile != "" {
-				log.Fatalf("The -o option is only permitted when generating a single mock")
-			}
-
 			// Search all packages in the target directory for interfaces
 			// annotated with "go:mock".
-			filesByPath, getErr := iface.GetAllInterfaces(pkgs)
+			filesByPath, getErr := iface.GetAllInterfaces(pkgs, config.outputFile)
 			if getErr != nil {
 				log.Fatalf(`Error getting interface information: %s`, getErr)
 			}
