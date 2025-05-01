@@ -1,4 +1,4 @@
-package directive
+package generate
 
 import (
 	"fmt"
@@ -11,14 +11,14 @@ import (
 	// Blank imports should not be included in mock files.
 	_ "embed"
 
-	"github.com/nicheinc/mock/examples/directive/internal"
+	"github.com/nicheinc/mock/examples/generate/internal"
 )
 
-// MyInterface is a sample interface with a large number of
+// Example is a sample interface with a large number of
 // methods of different signatures.
 //
-//go:mock
-type MyInterface interface {
+//go:generate mock -o example_mock.go Example
+type Example interface {
 	NoParamsOrReturn()
 	UnnamedParam(string)
 	UnnamedVariadicParam(...string)
@@ -34,8 +34,8 @@ type MyInterface interface {
 	RenamedImportVariadicParam(tmpls ...renamed.Template)
 	DotImportParam(file File)
 	DotImportVariadicParam(files ...File)
-	SelfReferentialParam(intf MyInterface)
-	SelfReferentialVariadicParam(intf ...MyInterface)
+	SelfReferentialParam(intf Example)
+	SelfReferentialVariadicParam(intf ...Example)
 	StructParam(obj struct{ num int })
 	StructVariadicParam(objs ...struct{ num int })
 	EmbeddedStructParam(obj struct{ int })
@@ -67,7 +67,7 @@ type MyInterface interface {
 	SameTypeNamedReturn() (err1, err2 error)
 	RenamedImportReturn() (tmpl renamed.Template)
 	DotImportReturn() (file File)
-	SelfReferentialReturn() (intf MyInterface)
+	SelfReferentialReturn() (intf Example)
 	StructReturn() (obj struct{ num int })
 	EmbeddedStructReturn() (obj struct{ int })
 	EmptyInterfaceReturn() (intf interface{})
