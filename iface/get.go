@@ -27,6 +27,10 @@ func GetAllInterfaces(pkgs []*packages.Package) (map[string]File, error) {
 	for _, pkg := range pkgs {
 		for _, fileNode := range pkg.Syntax {
 			ast.Inspect(fileNode, func(node ast.Node) bool {
+				// A nil node indicates we've finished traversing the AST.
+				if node == nil {
+					return false
+				}
 				// Only consider declarations with godoc comments.
 				decl, isGenDecl := node.(*ast.GenDecl)
 				if !isGenDecl || decl.Doc == nil {
