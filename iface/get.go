@@ -5,6 +5,7 @@ import (
 	"go/ast"
 	"go/types"
 	"path/filepath"
+	"slices"
 	"sort"
 	"strings"
 
@@ -232,7 +233,9 @@ func getInterface(fileInfo fileInfo, qualifier types.Qualifier, object types.Obj
 				method.Results = append(method.Results, result)
 			}
 
-			iface.Methods = append(iface.Methods, method)
+			if !slices.ContainsFunc(iface.Methods, method.Equal) {
+				iface.Methods = append(iface.Methods, method)
+			}
 		}
 	}
 

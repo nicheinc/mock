@@ -4,6 +4,7 @@ import (
 	"cmp"
 	"fmt"
 	"go/token"
+	"reflect"
 	"strings"
 )
 
@@ -74,6 +75,12 @@ type Method struct {
 	// String representation of the interface explicitly requiring this method
 	srcIface string
 	pos      token.Pos
+}
+
+func (m Method) Equal(other Method) bool {
+	return m.Name == other.Name &&
+		reflect.DeepEqual(m.Params, other.Params) &&
+		reflect.DeepEqual(m.Results, other.Results)
 }
 
 type Methods []Method

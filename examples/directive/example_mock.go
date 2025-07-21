@@ -107,6 +107,12 @@ type ExampleMock struct {
 	ChannelReturnCalled                      int32
 	MapReturnStub                            func() map[int]int
 	MapReturnCalled                          int32
+	SharedMethodStub                         func()
+	SharedMethodCalled                       int32
+	MethodAStub                              func()
+	MethodACalled                            int32
+	MethodBStub                              func()
+	MethodBCalled                            int32
 }
 
 // Verify that *ExampleMock implements Example.
@@ -708,4 +714,43 @@ func (m *ExampleMock) MapReturn() map[int]int {
 		panic("MapReturn unimplemented")
 	}
 	return m.MapReturnStub()
+}
+
+// SharedMethod is a stub for the Example.SharedMethod
+// method that records the number of times it has been called.
+func (m *ExampleMock) SharedMethod() {
+	atomic.AddInt32(&m.SharedMethodCalled, 1)
+	if m.SharedMethodStub == nil {
+		if m.T != nil {
+			m.T.Error("SharedMethodStub is nil")
+		}
+		panic("SharedMethod unimplemented")
+	}
+	m.SharedMethodStub()
+}
+
+// MethodA is a stub for the Example.MethodA
+// method that records the number of times it has been called.
+func (m *ExampleMock) MethodA() {
+	atomic.AddInt32(&m.MethodACalled, 1)
+	if m.MethodAStub == nil {
+		if m.T != nil {
+			m.T.Error("MethodAStub is nil")
+		}
+		panic("MethodA unimplemented")
+	}
+	m.MethodAStub()
+}
+
+// MethodB is a stub for the Example.MethodB
+// method that records the number of times it has been called.
+func (m *ExampleMock) MethodB() {
+	atomic.AddInt32(&m.MethodBCalled, 1)
+	if m.MethodBStub == nil {
+		if m.T != nil {
+			m.T.Error("MethodBStub is nil")
+		}
+		panic("MethodB unimplemented")
+	}
+	m.MethodBStub()
 }

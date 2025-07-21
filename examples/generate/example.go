@@ -82,4 +82,19 @@ type Example interface {
 	})
 	ChannelReturn() chan int
 	MapReturn() map[int]int
+
+	// EmbeddedA and EmbeddedB both provide SharedMethod(), which should be
+	// included in ExampleMock only once.
+	EmbeddedA
+	EmbeddedB
+}
+
+type EmbeddedA interface {
+	SharedMethod()
+	MethodA()
+}
+
+type EmbeddedB interface {
+	SharedMethod()
+	MethodB()
 }
