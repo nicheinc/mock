@@ -4,6 +4,7 @@ import (
 	"cmp"
 	"fmt"
 	"go/token"
+	"path"
 	"reflect"
 	"strings"
 )
@@ -60,11 +61,20 @@ type Import struct {
 	Path string
 }
 
+// LocalName returns the name that can be used to reference the imported package
+// locally: [Name] if nonempty or else the last element of [Path].
+func (i *Import) LocalName() string {
+	if i.Name != "" {
+		return i.Name
+	}
+	return path.Base(i.Path)
+}
+
 func (i *Import) String() string {
 	if i.Name != "" {
-		return fmt.Sprintf("%s \"%s\"", i.Name, i.Path)
+		return fmt.Sprintf(`%s "%s"`, i.Name, i.Path)
 	}
-	return fmt.Sprintf("\"%s\"", i.Path)
+	return fmt.Sprintf(`"%s"`, i.Path)
 }
 
 type Method struct {

@@ -1,13 +1,16 @@
 package iface
 
 import (
+	"cmp"
 	"fmt"
 	"go/ast"
 	"go/types"
 	"path/filepath"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
+	"unicode"
 
 	"golang.org/x/tools/go/packages"
 )
@@ -15,9 +18,9 @@ import (
 // fileInfo represents syntactic and type information for a file containing
 // interfaces to be mocked.
 type fileInfo struct {
-	pkg      *packages.Package
-	fileNode *ast.File
-	objects  []types.Object
+	pkg             *packages.Package
+	sourceFileNodes map[*ast.File]struct{}
+	objects         []types.Object
 }
 
 // GetAllInterfaces searches the given packages for interfaces annotated with a
@@ -76,11 +79,12 @@ func GetAllInterfaces(pkgs []*packages.Package, defaultOutputFile string) (map[s
 						// add the newly discovered interface.
 						if _, fileInfoExists := fileInfoByPath[outputPath]; !fileInfoExists {
 							fileInfoByPath[outputPath] = &fileInfo{
-								pkg:      pkg,
-								fileNode: fileNode,
+								pkg:             pkg,
+								sourceFileNodes: map[*ast.File]struct{}{},
 							}
 						}
 						fileInfo := fileInfoByPath[outputPath]
+						fileInfo.sourceFileNodes[fileNode] = struct{}{}
 						fileInfo.objects = append(fileInfo.objects, object)
 						return true
 					}
@@ -123,25 +127,81 @@ func GetInterface(pkg *packages.Package, ifaceName string) (File, error) {
 	}
 
 	return getFile(fileInfo{
-		pkg:      pkg,
-		fileNode: ifaceFileNode,
-		objects:  []types.Object{object},
+		pkg:             pkg,
+		sourceFileNodes: map[*ast.File]struct{}{ifaceFileNode: {}},
+		objects:         []types.Object{object},
 	})
+}
+
+// These packages should be kept in sync with references in template.tmpl.
+var defaultImports = map[string]bool{
+	"sync/atomic": true,
+	"testing":     true,
 }
 
 // getFile uses syntactic and type information about a file of mockable
 // interfaces to construct a text-template-friendly representation of that file.
 func getFile(fileInfo fileInfo) (File, error) {
-	// Get the containing file's imports, along with their names (if renamed).
+	// Aggregate the source files' imports, along with their names (if renamed).
 	var imports []Import
-	for _, fileImport := range fileInfo.fileNode.Imports {
-		imp := Import{
-			Path: strings.Trim(fileImport.Path.Value, `"`),
+	for sourceFile := range fileInfo.sourceFileNodes {
+		for _, fileImport := range sourceFile.Imports {
+			imp := Import{
+				Path: strings.Trim(fileImport.Path.Value, `"`),
+			}
+			if fileImport.Name != nil {
+				imp.Name = fileImport.Name.Name
+			}
+			imports = append(imports, imp)
 		}
-		if fileImport.Name != nil {
-			imp.Name = fileImport.Name.Name
+	}
+
+	// Every mock file includes imports required to implement the mock itself.
+	for path := range defaultImports {
+		imports = append(imports, Import{Path: path})
+	}
+
+	// If there are any conflicting imports (i.e. imports of different packages
+	// with the same name originating from different source files), we need to
+	// rename them to resolve the conflicts. To ensure the packages we choose to
+	// rename are deterministic, we sort the packages.
+	slices.SortFunc(imports, func(a, b Import) int {
+		// Prioritize the default imports since the mock template assumes those
+		// packages are not aliased.
+		aDflt, bDflt := defaultImports[a.Path], defaultImports[b.Path]
+		switch {
+		case aDflt && !bDflt:
+			return -1
+		case !aDflt && bDflt:
+			return 1
 		}
-		imports = append(imports, imp)
+
+		return cmp.Or(
+			cmp.Compare(a.Path, b.Path),
+			cmp.Compare(a.Name, b.Name),
+		)
+	})
+
+	// Remove consecutive equal elements, in case the same import is included in
+	// two source files.
+	imports = slices.Compact(imports)
+
+	// Finally, ensure uniqueness of local package names.
+	packageTaken := map[string]bool{}
+	for i := range imports {
+		imp := &imports[i]
+		for {
+			localName := imp.LocalName()
+			if !packageTaken[localName] {
+				packageTaken[localName] = true
+				break
+			}
+			name, incrementErr := incrementName(localName)
+			if incrementErr != nil {
+				return File{}, fmt.Errorf("resolving import conflict: %v", incrementErr)
+			}
+			imp.Name = name
+		}
 	}
 
 	var (
@@ -156,6 +216,30 @@ func getFile(fileInfo fileInfo) (File, error) {
 		file.Interfaces = append(file.Interfaces, iface)
 	}
 	return file, nil
+}
+
+// incrementName adds one to the last number in the given name. If the name
+// doesn't end in a number, incrementName appends "2".
+func incrementName(name string) (string, error) {
+	var (
+		runes = []rune(name)
+		cut   = 0
+	)
+	for i, r := range slices.Backward(runes) {
+		if !unicode.IsDigit(r) {
+			cut = i + 1
+			break
+		}
+	}
+	if cut == len(runes) {
+		return name + "2", nil
+	}
+	alpha, numeric := runes[:cut], runes[cut:]
+	n, parseErr := strconv.Atoi(string(numeric))
+	if parseErr != nil {
+		return "", fmt.Errorf("parsing numeric component of name: %v", parseErr)
+	}
+	return fmt.Sprintf("%v%v", string(alpha), n+1), nil
 }
 
 // getInterface uses syntactic and type information about an interface to
@@ -287,7 +371,6 @@ func qualify(pkg *types.Package, imps []Import, usedImps *[]Import) types.Qualif
 		// that the type is from
 		for _, imp := range imps {
 			if other.Path() == imp.Path {
-
 				// If the package was only imported for its
 				// side-effects, skip over it
 				if imp.Name == "_" {
