@@ -1,3 +1,17 @@
+# github.com/google/go-cmp v0.6.0
+## explicit; go 1.13
+github.com/google/go-cmp/cmp
+github.com/google/go-cmp/cmp/cmpopts
+github.com/google/go-cmp/cmp/internal/diff
+github.com/google/go-cmp/cmp/internal/flags
+github.com/google/go-cmp/cmp/internal/function
+github.com/google/go-cmp/cmp/internal/value
+# github.com/nicheinc/expect v0.2.0
+## explicit; go 1.20
+github.com/nicheinc/expect
+# golang.org/x/exp v0.0.0-20230425010034-47ecfdc1ba53
+## explicit; go 1.20
+golang.org/x/exp/constraints
 # golang.org/x/mod v0.26.0
 ## explicit; go 1.23.0
 golang.org/x/mod/internal/lazyregexp
