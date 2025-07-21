@@ -15,8 +15,9 @@ import (
 // source1.go, source2.go, and source3.go import all different sets of "sort",
 // "testing", and "atomic" packages, which conflict with each other.
 // Furthermore, the two sets of internal "atomic" and "testing" packages
-// conflict with packages imported into the generated sink_mock.go. For each
-// collision, one of the imports should be renamed within sink_mock.go.
+// conflict with packages that are imported automatically into every mock file
+// because they're used in the implementation of the mock. For each collision,
+// one of the imports should be renamed within sink_mock.go.
 //
 //go:mock sink_mock.go
 type Source1 interface {
