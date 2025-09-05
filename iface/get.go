@@ -152,6 +152,9 @@ func getFile(fileInfo fileInfo) (File, error) {
 			if fileImport.Name != nil {
 				imp.Name = fileImport.Name.Name
 			}
+			if importedPkg := fileInfo.pkg.Imports[imp.Path]; importedPkg != nil {
+				imp.Package = importedPkg.Name
+			}
 			imports = append(imports, imp)
 		}
 	}
