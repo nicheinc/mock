@@ -267,8 +267,7 @@ func getInterface(fileInfo fileInfo, qualifier types.Qualifier, object types.Obj
 	iface := Interface{Name: object.Name()}
 
 	// Record type parameter list info.
-	if ifaceNamed, ok := object.Type().(*types.Named); ok {
-		typeParams := ifaceNamed.TypeParams()
+	if typeParams := getTypeParams(object.Type()); typeParams != nil {
 		for i := range typeParams.Len() {
 			typeParam := typeParams.At(i)
 			iface.TypeParams = append(iface.TypeParams, TypeParam{
@@ -330,6 +329,18 @@ func getInterface(fileInfo fileInfo, qualifier types.Qualifier, object types.Obj
 	sort.Sort(iface.Methods)
 
 	return iface, nil
+}
+
+// getTypeParams returns type parameter list info for named types and aliases.
+// It returns nil for all other types.
+func getTypeParams(typ types.Type) *types.TypeParamList {
+	switch typ := typ.(type) {
+	case *types.Named:
+		return typ.TypeParams()
+	case *types.Alias:
+		return typ.TypeParams()
+	}
+	return nil
 }
 
 // explodeInterface traverses an interface type, returning the original

@@ -9,3 +9,8 @@ type Generic[T interface{ byte | internal.Internal }, U any] interface {
 	GetT() T
 	GetU() U
 }
+
+// GenericAlias is an alias of [Generic].
+//
+//go:mock
+type GenericAlias[T interface{ byte | internal.Internal }, U any] = Generic[T, U]
