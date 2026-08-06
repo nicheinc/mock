@@ -268,8 +268,7 @@ func getInterface(fileInfo fileInfo, qualifier types.Qualifier, object types.Obj
 
 	// Record type parameter list info.
 	if typeParams := getTypeParams(object.Type()); typeParams != nil {
-		for i := range typeParams.Len() {
-			typeParam := typeParams.At(i)
+		for typeParam := range typeParams.TypeParams() {
 			iface.TypeParams = append(iface.TypeParams, TypeParam{
 				Name:       typeParam.Obj().Name(),
 				Constraint: types.TypeString(typeParam.Constraint(), qualifier),
@@ -279,8 +278,7 @@ func getInterface(fileInfo fileInfo, qualifier types.Qualifier, object types.Obj
 
 	// Iterate through each embedded interface's explicit methods.
 	for _, ifaceType := range explodeInterface(ifaceType) {
-		for i := range ifaceType.NumExplicitMethods() {
-			methodObj := ifaceType.ExplicitMethod(i)
+		for methodObj := range ifaceType.ExplicitMethods() {
 			method := Method{
 				Name:     methodObj.Name(),
 				srcIface: ifaceType.String(),
@@ -293,9 +291,7 @@ func getInterface(fileInfo fileInfo, qualifier types.Qualifier, object types.Obj
 			}
 
 			// Keep track of the names and types of the parameters.
-			paramsTuple := sig.Params()
-			for j := 0; j < paramsTuple.Len(); j++ {
-				paramObj := paramsTuple.At(j)
+			for paramObj := range sig.Params().Variables() {
 				param := Param{
 					Name: paramObj.Name(),
 					Type: types.TypeString(paramObj.Type(), qualifier),
@@ -309,9 +305,7 @@ func getInterface(fileInfo fileInfo, qualifier types.Qualifier, object types.Obj
 			}
 
 			// Keep track of the names and types of the results.
-			resultsTuple := sig.Results()
-			for j := 0; j < resultsTuple.Len(); j++ {
-				resultObj := resultsTuple.At(j)
+			for resultObj := range sig.Results().Variables() {
 				result := Result{
 					Name: resultObj.Name(),
 					Type: types.TypeString(resultObj.Type(), qualifier),
@@ -358,8 +352,8 @@ func explodeInterface(iface *types.Interface) []*types.Interface {
 		if !visited[currentID] {
 			visited[currentID] = true
 			result = append(result, current)
-			for i := range current.NumEmbeddeds() {
-				switch embedded := current.EmbeddedType(i).(type) {
+			for embedded := range current.EmbeddedTypes() {
+				switch embedded := embedded.(type) {
 				case *types.Interface:
 					workQueue = append(workQueue, embedded)
 				case *types.Named:
@@ -456,8 +450,8 @@ func validateType(typ types.Type, visited map[types.Type]bool) bool {
 		return validateType(t.Elem(), visited)
 
 	case *types.Struct:
-		for i := range t.NumFields() {
-			if !validateType(t.Field(i).Type(), visited) {
+		for field := range t.Fields() {
+			if !validateType(field.Type(), visited) {
 				return false
 			}
 		}
@@ -467,8 +461,8 @@ func validateType(typ types.Type, visited map[types.Type]bool) bool {
 		return validateType(t.Elem(), visited)
 
 	case *types.Tuple:
-		for i := range t.Len() {
-			if !validateType(t.At(i).Type(), visited) {
+		for variable := range t.Variables() {
+			if !validateType(variable.Type(), visited) {
 				return false
 			}
 		}
@@ -479,21 +473,21 @@ func validateType(typ types.Type, visited map[types.Type]bool) bool {
 			validateType(t.Results(), visited)
 
 	case *types.Interface:
-		for i := range t.NumEmbeddeds() {
-			if !validateType(t.EmbeddedType(i), visited) {
+		for embedded := range t.EmbeddedTypes() {
+			if !validateType(embedded, visited) {
 				return false
 			}
 		}
-		for i := range t.NumMethods() {
-			if !validateType(t.Method(i).Type(), visited) {
+		for method := range t.Methods() {
+			if !validateType(method.Type(), visited) {
 				return false
 			}
 		}
 		return true
 
 	case *types.Union:
-		for i := range t.Len() {
-			if !validateType(t.Term(i).Type(), visited) {
+		for term := range t.Terms() {
+			if !validateType(term.Type(), visited) {
 				return false
 			}
 		}
@@ -507,9 +501,8 @@ func validateType(typ types.Type, visited map[types.Type]bool) bool {
 		return validateType(t.Elem(), visited)
 
 	case *types.Named:
-		typeParams := t.TypeParams()
-		for i := range typeParams.Len() {
-			if !validateType(typeParams.At(i).Constraint(), visited) {
+		for typeParam := range t.TypeParams().TypeParams() {
+			if !validateType(typeParam.Constraint(), visited) {
 				return false
 			}
 		}

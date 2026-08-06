@@ -40,8 +40,8 @@ type Example interface {
 	StructVariadicParam(objs ...struct{ num int })
 	EmbeddedStructParam(obj struct{ int })
 	EmbeddedStructVariadicParam(objs ...struct{ int })
-	EmptyInterfaceParam(intf interface{})
-	EmptyInterfaceVariadicParam(intf ...interface{})
+	EmptyInterfaceParam(intf any)
+	EmptyInterfaceVariadicParam(intf ...any)
 	InterfaceParam(intf interface {
 		MyFunc(num int) error
 	})
@@ -70,7 +70,7 @@ type Example interface {
 	SelfReferentialReturn() (intf Example)
 	StructReturn() (obj struct{ num int })
 	EmbeddedStructReturn() (obj struct{ int })
-	EmptyInterfaceReturn() (intf interface{})
+	EmptyInterfaceReturn() (intf any)
 	InterfaceReturn() (intf interface {
 		MyFunc(num int) error
 	})
