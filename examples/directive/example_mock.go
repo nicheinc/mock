@@ -57,9 +57,9 @@ type ExampleMock struct {
 	EmbeddedStructParamCalled                int32
 	EmbeddedStructVariadicParamStub          func(objs ...struct{ int })
 	EmbeddedStructVariadicParamCalled        int32
-	EmptyInterfaceParamStub                  func(intf interface{})
+	EmptyInterfaceParamStub                  func(intf any)
 	EmptyInterfaceParamCalled                int32
-	EmptyInterfaceVariadicParamStub          func(intf ...interface{})
+	EmptyInterfaceVariadicParamStub          func(intf ...any)
 	EmptyInterfaceVariadicParamCalled        int32
 	InterfaceParamStub                       func(intf interface{ MyFunc(num int) error })
 	InterfaceParamCalled                     int32
@@ -95,7 +95,7 @@ type ExampleMock struct {
 	StructReturnCalled                       int32
 	EmbeddedStructReturnStub                 func() (obj struct{ int })
 	EmbeddedStructReturnCalled               int32
-	EmptyInterfaceReturnStub                 func() (intf interface{})
+	EmptyInterfaceReturnStub                 func() (intf any)
 	EmptyInterfaceReturnCalled               int32
 	InterfaceReturnStub                      func() (intf interface{ MyFunc(num int) error })
 	InterfaceReturnCalled                    int32
@@ -393,7 +393,7 @@ func (m *ExampleMock) EmbeddedStructVariadicParam(objs ...struct{ int }) {
 
 // EmptyInterfaceParam is a stub for the Example.EmptyInterfaceParam
 // method that records the number of times it has been called.
-func (m *ExampleMock) EmptyInterfaceParam(intf interface{}) {
+func (m *ExampleMock) EmptyInterfaceParam(intf any) {
 	atomic.AddInt32(&m.EmptyInterfaceParamCalled, 1)
 	if m.EmptyInterfaceParamStub == nil {
 		if m.T != nil {
@@ -406,7 +406,7 @@ func (m *ExampleMock) EmptyInterfaceParam(intf interface{}) {
 
 // EmptyInterfaceVariadicParam is a stub for the Example.EmptyInterfaceVariadicParam
 // method that records the number of times it has been called.
-func (m *ExampleMock) EmptyInterfaceVariadicParam(intf ...interface{}) {
+func (m *ExampleMock) EmptyInterfaceVariadicParam(intf ...any) {
 	atomic.AddInt32(&m.EmptyInterfaceVariadicParamCalled, 1)
 	if m.EmptyInterfaceVariadicParamStub == nil {
 		if m.T != nil {
@@ -640,7 +640,7 @@ func (m *ExampleMock) EmbeddedStructReturn() (obj struct{ int }) {
 
 // EmptyInterfaceReturn is a stub for the Example.EmptyInterfaceReturn
 // method that records the number of times it has been called.
-func (m *ExampleMock) EmptyInterfaceReturn() (intf interface{}) {
+func (m *ExampleMock) EmptyInterfaceReturn() (intf any) {
 	atomic.AddInt32(&m.EmptyInterfaceReturnCalled, 1)
 	if m.EmptyInterfaceReturnStub == nil {
 		if m.T != nil {
