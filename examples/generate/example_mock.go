@@ -18,103 +18,103 @@ import (
 type ExampleMock struct {
 	T                                        *testing.T
 	NoParamsOrReturnStub                     func()
-	NoParamsOrReturnCalled                   atomic.Int32
+	NoParamsOrReturnCalled                   int32
 	UnnamedParamStub                         func(string)
-	UnnamedParamCalled                       atomic.Int32
+	UnnamedParamCalled                       int32
 	UnnamedVariadicParamStub                 func(...string)
-	UnnamedVariadicParamCalled               atomic.Int32
+	UnnamedVariadicParamCalled               int32
 	BlankParamStub                           func(_ string)
-	BlankParamCalled                         atomic.Int32
+	BlankParamCalled                         int32
 	BlankVariadicParamStub                   func(_ ...string)
-	BlankVariadicParamCalled                 atomic.Int32
+	BlankVariadicParamCalled                 int32
 	NamedParamStub                           func(str string)
-	NamedParamCalled                         atomic.Int32
+	NamedParamCalled                         int32
 	NamedVariadicParamStub                   func(strs ...string)
-	NamedVariadicParamCalled                 atomic.Int32
+	NamedVariadicParamCalled                 int32
 	SameTypeNamedParamsStub                  func(str1 string, str2 string)
-	SameTypeNamedParamsCalled                atomic.Int32
+	SameTypeNamedParamsCalled                int32
 	InternalTypeParamStub                    func(internal internal.Internal)
-	InternalTypeParamCalled                  atomic.Int32
+	InternalTypeParamCalled                  int32
 	ImportedParamStub                        func(tmpl template.Template)
-	ImportedParamCalled                      atomic.Int32
+	ImportedParamCalled                      int32
 	ImportedVariadicParamStub                func(tmpl ...template.Template)
-	ImportedVariadicParamCalled              atomic.Int32
+	ImportedVariadicParamCalled              int32
 	RenamedImportParamStub                   func(tmpl renamed.Template)
-	RenamedImportParamCalled                 atomic.Int32
+	RenamedImportParamCalled                 int32
 	RenamedImportVariadicParamStub           func(tmpls ...renamed.Template)
-	RenamedImportVariadicParamCalled         atomic.Int32
+	RenamedImportVariadicParamCalled         int32
 	DotImportParamStub                       func(file File)
-	DotImportParamCalled                     atomic.Int32
+	DotImportParamCalled                     int32
 	DotImportVariadicParamStub               func(files ...File)
-	DotImportVariadicParamCalled             atomic.Int32
+	DotImportVariadicParamCalled             int32
 	SelfReferentialParamStub                 func(intf Example)
-	SelfReferentialParamCalled               atomic.Int32
+	SelfReferentialParamCalled               int32
 	SelfReferentialVariadicParamStub         func(intf ...Example)
-	SelfReferentialVariadicParamCalled       atomic.Int32
+	SelfReferentialVariadicParamCalled       int32
 	StructParamStub                          func(obj struct{ num int })
-	StructParamCalled                        atomic.Int32
+	StructParamCalled                        int32
 	StructVariadicParamStub                  func(objs ...struct{ num int })
-	StructVariadicParamCalled                atomic.Int32
+	StructVariadicParamCalled                int32
 	EmbeddedStructParamStub                  func(obj struct{ int })
-	EmbeddedStructParamCalled                atomic.Int32
+	EmbeddedStructParamCalled                int32
 	EmbeddedStructVariadicParamStub          func(objs ...struct{ int })
-	EmbeddedStructVariadicParamCalled        atomic.Int32
+	EmbeddedStructVariadicParamCalled        int32
 	EmptyInterfaceParamStub                  func(intf any)
-	EmptyInterfaceParamCalled                atomic.Int32
+	EmptyInterfaceParamCalled                int32
 	EmptyInterfaceVariadicParamStub          func(intf ...any)
-	EmptyInterfaceVariadicParamCalled        atomic.Int32
+	EmptyInterfaceVariadicParamCalled        int32
 	InterfaceParamStub                       func(intf interface{ MyFunc(num int) error })
-	InterfaceParamCalled                     atomic.Int32
+	InterfaceParamCalled                     int32
 	InterfaceVariadicParamStub               func(intf ...interface{ MyFunc(num int) error })
-	InterfaceVariadicParamCalled             atomic.Int32
+	InterfaceVariadicParamCalled             int32
 	InterfaceVariadicFuncParamStub           func(intf interface{ MyFunc(nums ...int) error })
-	InterfaceVariadicFuncParamCalled         atomic.Int32
+	InterfaceVariadicFuncParamCalled         int32
 	InterfaceVariadicFuncVariadicParamStub   func(intf ...interface{ MyFunc(nums ...int) error })
-	InterfaceVariadicFuncVariadicParamCalled atomic.Int32
+	InterfaceVariadicFuncVariadicParamCalled int32
 	EmbeddedInterfaceParamStub               func(intf interface{ fmt.Stringer })
-	EmbeddedInterfaceParamCalled             atomic.Int32
+	EmbeddedInterfaceParamCalled             int32
 	ChannelParamStub                         func(chanParam chan int)
-	ChannelParamCalled                       atomic.Int32
+	ChannelParamCalled                       int32
 	MapParamStub                             func(mapParam map[int]int)
-	MapParamCalled                           atomic.Int32
+	MapParamCalled                           int32
 	UnnamedReturnStub                        func() error
-	UnnamedReturnCalled                      atomic.Int32
+	UnnamedReturnCalled                      int32
 	MultipleUnnamedReturnStub                func() (int, error)
-	MultipleUnnamedReturnCalled              atomic.Int32
+	MultipleUnnamedReturnCalled              int32
 	BlankReturnStub                          func() (_ error)
-	BlankReturnCalled                        atomic.Int32
+	BlankReturnCalled                        int32
 	NamedReturnStub                          func() (err error)
-	NamedReturnCalled                        atomic.Int32
+	NamedReturnCalled                        int32
 	SameTypeNamedReturnStub                  func() (err1 error, err2 error)
-	SameTypeNamedReturnCalled                atomic.Int32
+	SameTypeNamedReturnCalled                int32
 	RenamedImportReturnStub                  func() (tmpl renamed.Template)
-	RenamedImportReturnCalled                atomic.Int32
+	RenamedImportReturnCalled                int32
 	DotImportReturnStub                      func() (file File)
-	DotImportReturnCalled                    atomic.Int32
+	DotImportReturnCalled                    int32
 	SelfReferentialReturnStub                func() (intf Example)
-	SelfReferentialReturnCalled              atomic.Int32
+	SelfReferentialReturnCalled              int32
 	StructReturnStub                         func() (obj struct{ num int })
-	StructReturnCalled                       atomic.Int32
+	StructReturnCalled                       int32
 	EmbeddedStructReturnStub                 func() (obj struct{ int })
-	EmbeddedStructReturnCalled               atomic.Int32
+	EmbeddedStructReturnCalled               int32
 	EmptyInterfaceReturnStub                 func() (intf any)
-	EmptyInterfaceReturnCalled               atomic.Int32
+	EmptyInterfaceReturnCalled               int32
 	InterfaceReturnStub                      func() (intf interface{ MyFunc(num int) error })
-	InterfaceReturnCalled                    atomic.Int32
+	InterfaceReturnCalled                    int32
 	InterfaceVariadicFuncReturnStub          func() (intf interface{ MyFunc(nums ...int) error })
-	InterfaceVariadicFuncReturnCalled        atomic.Int32
+	InterfaceVariadicFuncReturnCalled        int32
 	EmbeddedInterfaceReturnStub              func() (intf interface{ fmt.Stringer })
-	EmbeddedInterfaceReturnCalled            atomic.Int32
+	EmbeddedInterfaceReturnCalled            int32
 	ChannelReturnStub                        func() chan int
-	ChannelReturnCalled                      atomic.Int32
+	ChannelReturnCalled                      int32
 	MapReturnStub                            func() map[int]int
-	MapReturnCalled                          atomic.Int32
+	MapReturnCalled                          int32
 	SharedMethodStub                         func()
-	SharedMethodCalled                       atomic.Int32
+	SharedMethodCalled                       int32
 	MethodAStub                              func()
-	MethodACalled                            atomic.Int32
+	MethodACalled                            int32
 	MethodBStub                              func()
-	MethodBCalled                            atomic.Int32
+	MethodBCalled                            int32
 }
 
 // Verify that *ExampleMock implements Example.
@@ -123,7 +123,7 @@ var _ Example = &ExampleMock{}
 // NoParamsOrReturn is a stub for the Example.NoParamsOrReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) NoParamsOrReturn() {
-	m.NoParamsOrReturnCalled.Add(1)
+	atomic.AddInt32(&m.NoParamsOrReturnCalled, 1)
 	if m.NoParamsOrReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("NoParamsOrReturnStub is nil")
@@ -136,7 +136,7 @@ func (m *ExampleMock) NoParamsOrReturn() {
 // UnnamedParam is a stub for the Example.UnnamedParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) UnnamedParam(param1 string) {
-	m.UnnamedParamCalled.Add(1)
+	atomic.AddInt32(&m.UnnamedParamCalled, 1)
 	if m.UnnamedParamStub == nil {
 		if m.T != nil {
 			m.T.Error("UnnamedParamStub is nil")
@@ -149,7 +149,7 @@ func (m *ExampleMock) UnnamedParam(param1 string) {
 // UnnamedVariadicParam is a stub for the Example.UnnamedVariadicParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) UnnamedVariadicParam(param1 ...string) {
-	m.UnnamedVariadicParamCalled.Add(1)
+	atomic.AddInt32(&m.UnnamedVariadicParamCalled, 1)
 	if m.UnnamedVariadicParamStub == nil {
 		if m.T != nil {
 			m.T.Error("UnnamedVariadicParamStub is nil")
@@ -162,7 +162,7 @@ func (m *ExampleMock) UnnamedVariadicParam(param1 ...string) {
 // BlankParam is a stub for the Example.BlankParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) BlankParam(param1 string) {
-	m.BlankParamCalled.Add(1)
+	atomic.AddInt32(&m.BlankParamCalled, 1)
 	if m.BlankParamStub == nil {
 		if m.T != nil {
 			m.T.Error("BlankParamStub is nil")
@@ -175,7 +175,7 @@ func (m *ExampleMock) BlankParam(param1 string) {
 // BlankVariadicParam is a stub for the Example.BlankVariadicParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) BlankVariadicParam(param1 ...string) {
-	m.BlankVariadicParamCalled.Add(1)
+	atomic.AddInt32(&m.BlankVariadicParamCalled, 1)
 	if m.BlankVariadicParamStub == nil {
 		if m.T != nil {
 			m.T.Error("BlankVariadicParamStub is nil")
@@ -188,7 +188,7 @@ func (m *ExampleMock) BlankVariadicParam(param1 ...string) {
 // NamedParam is a stub for the Example.NamedParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) NamedParam(str string) {
-	m.NamedParamCalled.Add(1)
+	atomic.AddInt32(&m.NamedParamCalled, 1)
 	if m.NamedParamStub == nil {
 		if m.T != nil {
 			m.T.Error("NamedParamStub is nil")
@@ -201,7 +201,7 @@ func (m *ExampleMock) NamedParam(str string) {
 // NamedVariadicParam is a stub for the Example.NamedVariadicParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) NamedVariadicParam(strs ...string) {
-	m.NamedVariadicParamCalled.Add(1)
+	atomic.AddInt32(&m.NamedVariadicParamCalled, 1)
 	if m.NamedVariadicParamStub == nil {
 		if m.T != nil {
 			m.T.Error("NamedVariadicParamStub is nil")
@@ -214,7 +214,7 @@ func (m *ExampleMock) NamedVariadicParam(strs ...string) {
 // SameTypeNamedParams is a stub for the Example.SameTypeNamedParams
 // method that records the number of times it has been called.
 func (m *ExampleMock) SameTypeNamedParams(str1 string, str2 string) {
-	m.SameTypeNamedParamsCalled.Add(1)
+	atomic.AddInt32(&m.SameTypeNamedParamsCalled, 1)
 	if m.SameTypeNamedParamsStub == nil {
 		if m.T != nil {
 			m.T.Error("SameTypeNamedParamsStub is nil")
@@ -227,7 +227,7 @@ func (m *ExampleMock) SameTypeNamedParams(str1 string, str2 string) {
 // InternalTypeParam is a stub for the Example.InternalTypeParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) InternalTypeParam(internal internal.Internal) {
-	m.InternalTypeParamCalled.Add(1)
+	atomic.AddInt32(&m.InternalTypeParamCalled, 1)
 	if m.InternalTypeParamStub == nil {
 		if m.T != nil {
 			m.T.Error("InternalTypeParamStub is nil")
@@ -240,7 +240,7 @@ func (m *ExampleMock) InternalTypeParam(internal internal.Internal) {
 // ImportedParam is a stub for the Example.ImportedParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) ImportedParam(tmpl template.Template) {
-	m.ImportedParamCalled.Add(1)
+	atomic.AddInt32(&m.ImportedParamCalled, 1)
 	if m.ImportedParamStub == nil {
 		if m.T != nil {
 			m.T.Error("ImportedParamStub is nil")
@@ -253,7 +253,7 @@ func (m *ExampleMock) ImportedParam(tmpl template.Template) {
 // ImportedVariadicParam is a stub for the Example.ImportedVariadicParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) ImportedVariadicParam(tmpl ...template.Template) {
-	m.ImportedVariadicParamCalled.Add(1)
+	atomic.AddInt32(&m.ImportedVariadicParamCalled, 1)
 	if m.ImportedVariadicParamStub == nil {
 		if m.T != nil {
 			m.T.Error("ImportedVariadicParamStub is nil")
@@ -266,7 +266,7 @@ func (m *ExampleMock) ImportedVariadicParam(tmpl ...template.Template) {
 // RenamedImportParam is a stub for the Example.RenamedImportParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) RenamedImportParam(tmpl renamed.Template) {
-	m.RenamedImportParamCalled.Add(1)
+	atomic.AddInt32(&m.RenamedImportParamCalled, 1)
 	if m.RenamedImportParamStub == nil {
 		if m.T != nil {
 			m.T.Error("RenamedImportParamStub is nil")
@@ -279,7 +279,7 @@ func (m *ExampleMock) RenamedImportParam(tmpl renamed.Template) {
 // RenamedImportVariadicParam is a stub for the Example.RenamedImportVariadicParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) RenamedImportVariadicParam(tmpls ...renamed.Template) {
-	m.RenamedImportVariadicParamCalled.Add(1)
+	atomic.AddInt32(&m.RenamedImportVariadicParamCalled, 1)
 	if m.RenamedImportVariadicParamStub == nil {
 		if m.T != nil {
 			m.T.Error("RenamedImportVariadicParamStub is nil")
@@ -292,7 +292,7 @@ func (m *ExampleMock) RenamedImportVariadicParam(tmpls ...renamed.Template) {
 // DotImportParam is a stub for the Example.DotImportParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) DotImportParam(file File) {
-	m.DotImportParamCalled.Add(1)
+	atomic.AddInt32(&m.DotImportParamCalled, 1)
 	if m.DotImportParamStub == nil {
 		if m.T != nil {
 			m.T.Error("DotImportParamStub is nil")
@@ -305,7 +305,7 @@ func (m *ExampleMock) DotImportParam(file File) {
 // DotImportVariadicParam is a stub for the Example.DotImportVariadicParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) DotImportVariadicParam(files ...File) {
-	m.DotImportVariadicParamCalled.Add(1)
+	atomic.AddInt32(&m.DotImportVariadicParamCalled, 1)
 	if m.DotImportVariadicParamStub == nil {
 		if m.T != nil {
 			m.T.Error("DotImportVariadicParamStub is nil")
@@ -318,7 +318,7 @@ func (m *ExampleMock) DotImportVariadicParam(files ...File) {
 // SelfReferentialParam is a stub for the Example.SelfReferentialParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) SelfReferentialParam(intf Example) {
-	m.SelfReferentialParamCalled.Add(1)
+	atomic.AddInt32(&m.SelfReferentialParamCalled, 1)
 	if m.SelfReferentialParamStub == nil {
 		if m.T != nil {
 			m.T.Error("SelfReferentialParamStub is nil")
@@ -331,7 +331,7 @@ func (m *ExampleMock) SelfReferentialParam(intf Example) {
 // SelfReferentialVariadicParam is a stub for the Example.SelfReferentialVariadicParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) SelfReferentialVariadicParam(intf ...Example) {
-	m.SelfReferentialVariadicParamCalled.Add(1)
+	atomic.AddInt32(&m.SelfReferentialVariadicParamCalled, 1)
 	if m.SelfReferentialVariadicParamStub == nil {
 		if m.T != nil {
 			m.T.Error("SelfReferentialVariadicParamStub is nil")
@@ -344,7 +344,7 @@ func (m *ExampleMock) SelfReferentialVariadicParam(intf ...Example) {
 // StructParam is a stub for the Example.StructParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) StructParam(obj struct{ num int }) {
-	m.StructParamCalled.Add(1)
+	atomic.AddInt32(&m.StructParamCalled, 1)
 	if m.StructParamStub == nil {
 		if m.T != nil {
 			m.T.Error("StructParamStub is nil")
@@ -357,7 +357,7 @@ func (m *ExampleMock) StructParam(obj struct{ num int }) {
 // StructVariadicParam is a stub for the Example.StructVariadicParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) StructVariadicParam(objs ...struct{ num int }) {
-	m.StructVariadicParamCalled.Add(1)
+	atomic.AddInt32(&m.StructVariadicParamCalled, 1)
 	if m.StructVariadicParamStub == nil {
 		if m.T != nil {
 			m.T.Error("StructVariadicParamStub is nil")
@@ -370,7 +370,7 @@ func (m *ExampleMock) StructVariadicParam(objs ...struct{ num int }) {
 // EmbeddedStructParam is a stub for the Example.EmbeddedStructParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) EmbeddedStructParam(obj struct{ int }) {
-	m.EmbeddedStructParamCalled.Add(1)
+	atomic.AddInt32(&m.EmbeddedStructParamCalled, 1)
 	if m.EmbeddedStructParamStub == nil {
 		if m.T != nil {
 			m.T.Error("EmbeddedStructParamStub is nil")
@@ -383,7 +383,7 @@ func (m *ExampleMock) EmbeddedStructParam(obj struct{ int }) {
 // EmbeddedStructVariadicParam is a stub for the Example.EmbeddedStructVariadicParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) EmbeddedStructVariadicParam(objs ...struct{ int }) {
-	m.EmbeddedStructVariadicParamCalled.Add(1)
+	atomic.AddInt32(&m.EmbeddedStructVariadicParamCalled, 1)
 	if m.EmbeddedStructVariadicParamStub == nil {
 		if m.T != nil {
 			m.T.Error("EmbeddedStructVariadicParamStub is nil")
@@ -396,7 +396,7 @@ func (m *ExampleMock) EmbeddedStructVariadicParam(objs ...struct{ int }) {
 // EmptyInterfaceParam is a stub for the Example.EmptyInterfaceParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) EmptyInterfaceParam(intf any) {
-	m.EmptyInterfaceParamCalled.Add(1)
+	atomic.AddInt32(&m.EmptyInterfaceParamCalled, 1)
 	if m.EmptyInterfaceParamStub == nil {
 		if m.T != nil {
 			m.T.Error("EmptyInterfaceParamStub is nil")
@@ -409,7 +409,7 @@ func (m *ExampleMock) EmptyInterfaceParam(intf any) {
 // EmptyInterfaceVariadicParam is a stub for the Example.EmptyInterfaceVariadicParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) EmptyInterfaceVariadicParam(intf ...any) {
-	m.EmptyInterfaceVariadicParamCalled.Add(1)
+	atomic.AddInt32(&m.EmptyInterfaceVariadicParamCalled, 1)
 	if m.EmptyInterfaceVariadicParamStub == nil {
 		if m.T != nil {
 			m.T.Error("EmptyInterfaceVariadicParamStub is nil")
@@ -422,7 +422,7 @@ func (m *ExampleMock) EmptyInterfaceVariadicParam(intf ...any) {
 // InterfaceParam is a stub for the Example.InterfaceParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) InterfaceParam(intf interface{ MyFunc(num int) error }) {
-	m.InterfaceParamCalled.Add(1)
+	atomic.AddInt32(&m.InterfaceParamCalled, 1)
 	if m.InterfaceParamStub == nil {
 		if m.T != nil {
 			m.T.Error("InterfaceParamStub is nil")
@@ -435,7 +435,7 @@ func (m *ExampleMock) InterfaceParam(intf interface{ MyFunc(num int) error }) {
 // InterfaceVariadicParam is a stub for the Example.InterfaceVariadicParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) InterfaceVariadicParam(intf ...interface{ MyFunc(num int) error }) {
-	m.InterfaceVariadicParamCalled.Add(1)
+	atomic.AddInt32(&m.InterfaceVariadicParamCalled, 1)
 	if m.InterfaceVariadicParamStub == nil {
 		if m.T != nil {
 			m.T.Error("InterfaceVariadicParamStub is nil")
@@ -448,7 +448,7 @@ func (m *ExampleMock) InterfaceVariadicParam(intf ...interface{ MyFunc(num int) 
 // InterfaceVariadicFuncParam is a stub for the Example.InterfaceVariadicFuncParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) InterfaceVariadicFuncParam(intf interface{ MyFunc(nums ...int) error }) {
-	m.InterfaceVariadicFuncParamCalled.Add(1)
+	atomic.AddInt32(&m.InterfaceVariadicFuncParamCalled, 1)
 	if m.InterfaceVariadicFuncParamStub == nil {
 		if m.T != nil {
 			m.T.Error("InterfaceVariadicFuncParamStub is nil")
@@ -461,7 +461,7 @@ func (m *ExampleMock) InterfaceVariadicFuncParam(intf interface{ MyFunc(nums ...
 // InterfaceVariadicFuncVariadicParam is a stub for the Example.InterfaceVariadicFuncVariadicParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) InterfaceVariadicFuncVariadicParam(intf ...interface{ MyFunc(nums ...int) error }) {
-	m.InterfaceVariadicFuncVariadicParamCalled.Add(1)
+	atomic.AddInt32(&m.InterfaceVariadicFuncVariadicParamCalled, 1)
 	if m.InterfaceVariadicFuncVariadicParamStub == nil {
 		if m.T != nil {
 			m.T.Error("InterfaceVariadicFuncVariadicParamStub is nil")
@@ -474,7 +474,7 @@ func (m *ExampleMock) InterfaceVariadicFuncVariadicParam(intf ...interface{ MyFu
 // EmbeddedInterfaceParam is a stub for the Example.EmbeddedInterfaceParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) EmbeddedInterfaceParam(intf interface{ fmt.Stringer }) {
-	m.EmbeddedInterfaceParamCalled.Add(1)
+	atomic.AddInt32(&m.EmbeddedInterfaceParamCalled, 1)
 	if m.EmbeddedInterfaceParamStub == nil {
 		if m.T != nil {
 			m.T.Error("EmbeddedInterfaceParamStub is nil")
@@ -487,7 +487,7 @@ func (m *ExampleMock) EmbeddedInterfaceParam(intf interface{ fmt.Stringer }) {
 // ChannelParam is a stub for the Example.ChannelParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) ChannelParam(chanParam chan int) {
-	m.ChannelParamCalled.Add(1)
+	atomic.AddInt32(&m.ChannelParamCalled, 1)
 	if m.ChannelParamStub == nil {
 		if m.T != nil {
 			m.T.Error("ChannelParamStub is nil")
@@ -500,7 +500,7 @@ func (m *ExampleMock) ChannelParam(chanParam chan int) {
 // MapParam is a stub for the Example.MapParam
 // method that records the number of times it has been called.
 func (m *ExampleMock) MapParam(mapParam map[int]int) {
-	m.MapParamCalled.Add(1)
+	atomic.AddInt32(&m.MapParamCalled, 1)
 	if m.MapParamStub == nil {
 		if m.T != nil {
 			m.T.Error("MapParamStub is nil")
@@ -513,7 +513,7 @@ func (m *ExampleMock) MapParam(mapParam map[int]int) {
 // UnnamedReturn is a stub for the Example.UnnamedReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) UnnamedReturn() error {
-	m.UnnamedReturnCalled.Add(1)
+	atomic.AddInt32(&m.UnnamedReturnCalled, 1)
 	if m.UnnamedReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("UnnamedReturnStub is nil")
@@ -526,7 +526,7 @@ func (m *ExampleMock) UnnamedReturn() error {
 // MultipleUnnamedReturn is a stub for the Example.MultipleUnnamedReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) MultipleUnnamedReturn() (int, error) {
-	m.MultipleUnnamedReturnCalled.Add(1)
+	atomic.AddInt32(&m.MultipleUnnamedReturnCalled, 1)
 	if m.MultipleUnnamedReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("MultipleUnnamedReturnStub is nil")
@@ -539,7 +539,7 @@ func (m *ExampleMock) MultipleUnnamedReturn() (int, error) {
 // BlankReturn is a stub for the Example.BlankReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) BlankReturn() (_ error) {
-	m.BlankReturnCalled.Add(1)
+	atomic.AddInt32(&m.BlankReturnCalled, 1)
 	if m.BlankReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("BlankReturnStub is nil")
@@ -552,7 +552,7 @@ func (m *ExampleMock) BlankReturn() (_ error) {
 // NamedReturn is a stub for the Example.NamedReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) NamedReturn() (err error) {
-	m.NamedReturnCalled.Add(1)
+	atomic.AddInt32(&m.NamedReturnCalled, 1)
 	if m.NamedReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("NamedReturnStub is nil")
@@ -565,7 +565,7 @@ func (m *ExampleMock) NamedReturn() (err error) {
 // SameTypeNamedReturn is a stub for the Example.SameTypeNamedReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) SameTypeNamedReturn() (err1 error, err2 error) {
-	m.SameTypeNamedReturnCalled.Add(1)
+	atomic.AddInt32(&m.SameTypeNamedReturnCalled, 1)
 	if m.SameTypeNamedReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("SameTypeNamedReturnStub is nil")
@@ -578,7 +578,7 @@ func (m *ExampleMock) SameTypeNamedReturn() (err1 error, err2 error) {
 // RenamedImportReturn is a stub for the Example.RenamedImportReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) RenamedImportReturn() (tmpl renamed.Template) {
-	m.RenamedImportReturnCalled.Add(1)
+	atomic.AddInt32(&m.RenamedImportReturnCalled, 1)
 	if m.RenamedImportReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("RenamedImportReturnStub is nil")
@@ -591,7 +591,7 @@ func (m *ExampleMock) RenamedImportReturn() (tmpl renamed.Template) {
 // DotImportReturn is a stub for the Example.DotImportReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) DotImportReturn() (file File) {
-	m.DotImportReturnCalled.Add(1)
+	atomic.AddInt32(&m.DotImportReturnCalled, 1)
 	if m.DotImportReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("DotImportReturnStub is nil")
@@ -604,7 +604,7 @@ func (m *ExampleMock) DotImportReturn() (file File) {
 // SelfReferentialReturn is a stub for the Example.SelfReferentialReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) SelfReferentialReturn() (intf Example) {
-	m.SelfReferentialReturnCalled.Add(1)
+	atomic.AddInt32(&m.SelfReferentialReturnCalled, 1)
 	if m.SelfReferentialReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("SelfReferentialReturnStub is nil")
@@ -617,7 +617,7 @@ func (m *ExampleMock) SelfReferentialReturn() (intf Example) {
 // StructReturn is a stub for the Example.StructReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) StructReturn() (obj struct{ num int }) {
-	m.StructReturnCalled.Add(1)
+	atomic.AddInt32(&m.StructReturnCalled, 1)
 	if m.StructReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("StructReturnStub is nil")
@@ -630,7 +630,7 @@ func (m *ExampleMock) StructReturn() (obj struct{ num int }) {
 // EmbeddedStructReturn is a stub for the Example.EmbeddedStructReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) EmbeddedStructReturn() (obj struct{ int }) {
-	m.EmbeddedStructReturnCalled.Add(1)
+	atomic.AddInt32(&m.EmbeddedStructReturnCalled, 1)
 	if m.EmbeddedStructReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("EmbeddedStructReturnStub is nil")
@@ -643,7 +643,7 @@ func (m *ExampleMock) EmbeddedStructReturn() (obj struct{ int }) {
 // EmptyInterfaceReturn is a stub for the Example.EmptyInterfaceReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) EmptyInterfaceReturn() (intf any) {
-	m.EmptyInterfaceReturnCalled.Add(1)
+	atomic.AddInt32(&m.EmptyInterfaceReturnCalled, 1)
 	if m.EmptyInterfaceReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("EmptyInterfaceReturnStub is nil")
@@ -656,7 +656,7 @@ func (m *ExampleMock) EmptyInterfaceReturn() (intf any) {
 // InterfaceReturn is a stub for the Example.InterfaceReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) InterfaceReturn() (intf interface{ MyFunc(num int) error }) {
-	m.InterfaceReturnCalled.Add(1)
+	atomic.AddInt32(&m.InterfaceReturnCalled, 1)
 	if m.InterfaceReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("InterfaceReturnStub is nil")
@@ -669,7 +669,7 @@ func (m *ExampleMock) InterfaceReturn() (intf interface{ MyFunc(num int) error }
 // InterfaceVariadicFuncReturn is a stub for the Example.InterfaceVariadicFuncReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) InterfaceVariadicFuncReturn() (intf interface{ MyFunc(nums ...int) error }) {
-	m.InterfaceVariadicFuncReturnCalled.Add(1)
+	atomic.AddInt32(&m.InterfaceVariadicFuncReturnCalled, 1)
 	if m.InterfaceVariadicFuncReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("InterfaceVariadicFuncReturnStub is nil")
@@ -682,7 +682,7 @@ func (m *ExampleMock) InterfaceVariadicFuncReturn() (intf interface{ MyFunc(nums
 // EmbeddedInterfaceReturn is a stub for the Example.EmbeddedInterfaceReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) EmbeddedInterfaceReturn() (intf interface{ fmt.Stringer }) {
-	m.EmbeddedInterfaceReturnCalled.Add(1)
+	atomic.AddInt32(&m.EmbeddedInterfaceReturnCalled, 1)
 	if m.EmbeddedInterfaceReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("EmbeddedInterfaceReturnStub is nil")
@@ -695,7 +695,7 @@ func (m *ExampleMock) EmbeddedInterfaceReturn() (intf interface{ fmt.Stringer })
 // ChannelReturn is a stub for the Example.ChannelReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) ChannelReturn() chan int {
-	m.ChannelReturnCalled.Add(1)
+	atomic.AddInt32(&m.ChannelReturnCalled, 1)
 	if m.ChannelReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("ChannelReturnStub is nil")
@@ -708,7 +708,7 @@ func (m *ExampleMock) ChannelReturn() chan int {
 // MapReturn is a stub for the Example.MapReturn
 // method that records the number of times it has been called.
 func (m *ExampleMock) MapReturn() map[int]int {
-	m.MapReturnCalled.Add(1)
+	atomic.AddInt32(&m.MapReturnCalled, 1)
 	if m.MapReturnStub == nil {
 		if m.T != nil {
 			m.T.Error("MapReturnStub is nil")
@@ -721,7 +721,7 @@ func (m *ExampleMock) MapReturn() map[int]int {
 // SharedMethod is a stub for the Example.SharedMethod
 // method that records the number of times it has been called.
 func (m *ExampleMock) SharedMethod() {
-	m.SharedMethodCalled.Add(1)
+	atomic.AddInt32(&m.SharedMethodCalled, 1)
 	if m.SharedMethodStub == nil {
 		if m.T != nil {
 			m.T.Error("SharedMethodStub is nil")
@@ -734,7 +734,7 @@ func (m *ExampleMock) SharedMethod() {
 // MethodA is a stub for the Example.MethodA
 // method that records the number of times it has been called.
 func (m *ExampleMock) MethodA() {
-	m.MethodACalled.Add(1)
+	atomic.AddInt32(&m.MethodACalled, 1)
 	if m.MethodAStub == nil {
 		if m.T != nil {
 			m.T.Error("MethodAStub is nil")
@@ -747,7 +747,7 @@ func (m *ExampleMock) MethodA() {
 // MethodB is a stub for the Example.MethodB
 // method that records the number of times it has been called.
 func (m *ExampleMock) MethodB() {
-	m.MethodBCalled.Add(1)
+	atomic.AddInt32(&m.MethodBCalled, 1)
 	if m.MethodBStub == nil {
 		if m.T != nil {
 			m.T.Error("MethodBStub is nil")

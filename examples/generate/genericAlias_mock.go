@@ -14,9 +14,9 @@ import (
 type GenericAliasMock[T interface{ byte | internal.Internal }, U any] struct {
 	T          *testing.T
 	GetTStub   func() T
-	GetTCalled atomic.Int32
+	GetTCalled int32
 	GetUStub   func() U
-	GetUCalled atomic.Int32
+	GetUCalled int32
 }
 
 // Verify that *GenericAliasMock implements GenericAlias.
@@ -27,7 +27,7 @@ func _[T interface{ byte | internal.Internal }, U any]() {
 // GetT is a stub for the GenericAlias.GetT
 // method that records the number of times it has been called.
 func (m *GenericAliasMock[T, U]) GetT() T {
-	m.GetTCalled.Add(1)
+	atomic.AddInt32(&m.GetTCalled, 1)
 	if m.GetTStub == nil {
 		if m.T != nil {
 			m.T.Error("GetTStub is nil")
@@ -40,7 +40,7 @@ func (m *GenericAliasMock[T, U]) GetT() T {
 // GetU is a stub for the GenericAlias.GetU
 // method that records the number of times it has been called.
 func (m *GenericAliasMock[T, U]) GetU() U {
-	m.GetUCalled.Add(1)
+	atomic.AddInt32(&m.GetUCalled, 1)
 	if m.GetUStub == nil {
 		if m.T != nil {
 			m.T.Error("GetUStub is nil")
